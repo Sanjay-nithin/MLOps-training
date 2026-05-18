@@ -1,0 +1,5 @@
+Many students begin learning with strong motivation, but gradually lose focus due to digital distractions, cognitive overload, stress, and inconsistent engagement. Existing learning platforms primarily measure outcomes such as quiz scores or course completion, but they often fail to detect early behavioral signals that indicate a learner is becoming distracted, demotivated, or likely to abandon the learning process.
+
+There is a need for an intelligent learning support system that can continuously analyze behavioral patterns — such as screen activity, interaction patterns, typing behavior, attention shifts, and stress indicators — to identify when a student is losing focus or disengaging from their learning goals. By providing timely interventions, alerts, and personalized focus assistance, such a system can help students maintain consistency, improve concentration, and reduce dropout tendencies.
+
+This solution could support students in sustaining productive learning habits, assist mentors in identifying at-risk learners early, and enable online learning platforms to deliver more adaptive and learner-aware educational experiences.
