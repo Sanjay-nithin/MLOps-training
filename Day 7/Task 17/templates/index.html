@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Burnout Predictor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            text-transform: capitalize;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-predict {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-predict:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-predict:active {
+            transform: translateY(0);
+        }
+
+        .btn-reset {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-reset:hover {
+            background: #e8e8e8;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            text-align: center;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result.success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .info-text {
+            font-size: 12px;
+            color: #999;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Developer Burnout Predictor</h1>
+        <p class="subtitle">Enter your daily work metrics to assess burnout risk</p>
+        
+        <form id="burnoutForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" name="age" min="18" max="100" step="1" placeholder="26" required>
+                </div>
+                <div class="form-group">
+                    <label for="experience_years">Experience (years)</label>
+                    <input type="number" id="experience_years" name="experience_years" min="0" max="60" step="0.5" placeholder="12" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="daily_work_hours">Daily Work Hours</label>
+                    <input type="number" id="daily_work_hours" name="daily_work_hours" min="0" max="24" step="0.01" placeholder="10.33" required>
+                </div>
+                <div class="form-group">
+                    <label for="sleep_hours">Sleep Hours</label>
+                    <input type="number" id="sleep_hours" name="sleep_hours" min="0" max="24" step="0.01" placeholder="4.45" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="caffeine_intake">Caffeine Intake (cups)</label>
+                    <input type="number" id="caffeine_intake" name="caffeine_intake" min="0" max="20" step="0.5" placeholder="2.0" required>
+                </div>
+                <div class="form-group">
+                    <label for="exercise_hours">Exercise Hours</label>
+                    <input type="number" id="exercise_hours" name="exercise_hours" min="0" max="24" step="0.01" placeholder="0.14" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="screen_time">Screen Time (hours)</label>
+                    <input type="number" id="screen_time" name="screen_time" min="0" max="24" step="0.01" placeholder="15.07" required>
+                </div>
+                <div class="form-group">
+                    <label for="stress_level">Stress Level (0-100)</label>
+                    <input type="number" id="stress_level" name="stress_level" min="0" max="100" step="0.01" placeholder="55.96" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="bugs_per_day">Bugs Per Day</label>
+                    <input type="number" id="bugs_per_day" name="bugs_per_day" min="0" max="1000" step="0.1" placeholder="11.0" required>
+                </div>
+                <div class="form-group">
+                    <label for="commits_per_day">Commits Per Day</label>
+                    <input type="number" id="commits_per_day" name="commits_per_day" min="0" max="1000" step="0.1" placeholder="4.0" required>
+                </div>
+            </div>
+
+            <div class="form-row full">
+                <div class="form-group">
+                    <label for="meetings_per_day">Meetings Per Day</label>
+                    <input type="number" id="meetings_per_day" name="meetings_per_day" min="0" max="100" step="0.1" placeholder="1.0" required>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn-predict">Predict Burnout</button>
+                <button type="reset" class="btn-reset">Clear Form</button>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                Processing your data...
+            </div>
+
+            <div class="result" id="result">
+                <div class="result-title" id="resultTitle"></div>
+                <div class="result-value" id="resultValue"></div>
+            </div>
+        </form>
+
+        <p class="info-text">Your data is processed securely. No data is stored.</p>
+    </div>
+
+    <script>
+        const form = document.getElementById('burnoutForm');
+        const loading = document.getElementById('loading');
+        const result = document.getElementById('result');
+        const resultTitle = document.getElementById('resultTitle');
+        const resultValue = document.getElementById('resultValue');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Clear previous results
+            result.classList.remove('show', 'success', 'error');
+            loading.classList.add('show');
+
+            // Collect form data
+            const formData = {
+                age: parseFloat(document.getElementById('age').value),
+                experience_years: parseFloat(document.getElementById('experience_years').value),
+                daily_work_hours: parseFloat(document.getElementById('daily_work_hours').value),
+                sleep_hours: parseFloat(document.getElementById('sleep_hours').value),
+                caffeine_intake: parseFloat(document.getElementById('caffeine_intake').value),
+                bugs_per_day: parseFloat(document.getElementById('bugs_per_day').value),
+                commits_per_day: parseFloat(document.getElementById('commits_per_day').value),
+                meetings_per_day: parseFloat(document.getElementById('meetings_per_day').value),
+                screen_time: parseFloat(document.getElementById('screen_time').value),
+                exercise_hours: parseFloat(document.getElementById('exercise_hours').value),
+                stress_level: parseFloat(document.getElementById('stress_level').value)
+            };
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                loading.classList.remove('show');
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                result.classList.add('show', 'success');
+                resultTitle.textContent = '✓ Prediction Result';
+                
+                // Display prediction result
+                if (data.message !== undefined) {
+                    const predictionText = data.message;
+                    resultValue.textContent = predictionText;
+                } else {
+                    resultValue.textContent = JSON.stringify(data);
+                }
+            } catch (error) {
+                loading.classList.remove('show');
+                result.classList.add('show', 'error');
+                resultTitle.textContent = '✗ Error';
+                resultValue.textContent = error.message || 'Failed to get prediction. Make sure the backend is running.';
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
