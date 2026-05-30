@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegant Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0a0a0a;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            background: #1a1a1a;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            padding: 30px;
+            width: 100%;
+            max-width: 380px;
+            border: 1px solid #333333;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #e0e0e0;
+            font-size: 24px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .header i {
+            margin-right: 10px;
+        }
+
+        .display {
+            background: #0f0f0f;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #333333;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .equation {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 16px;
+            text-align: right;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            min-height: 20px;
+        }
+
+        .display input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 300;
+            text-align: right;
+            outline: none;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+
+        .display input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        button {
+            padding: 18px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        button:hover:before {
+            left: 0;
+        }
+
+        button.number,
+        button.operator,
+        button.equal,
+        button.clear,
+        button.delete {
+            font-size: 20px;
+        }
+
+        button.number {
+            background: #2a2a2a;
+            color: #ffffff;
+            border: 1px solid #404040;
+        }
+
+        button.number:hover {
+            background: #333333;
+            transform: translateY(-1px);
+        }
+
+        button.number:active {
+            transform: translateY(0);
+        }
+
+        button.operator {
+            background: #252525;
+            color: #ffffff;
+            border: 1px solid #3a3a3a;
+        }
+
+        button.operator:hover {
+            background: #2f2f2f;
+            transform: translateY(-1px);
+        }
+
+        button.operator:active {
+            transform: translateY(0);
+        }
+
+        button.equal {
+            grid-column: span 2;
+            background: #404040;
+            color: #ffffff;
+            font-weight: 600;
+            letter-spacing: 1px;
+            border: 1px solid #555555;
+        }
+
+        button.equal:hover {
+            background: #4a4a4a;
+            transform: translateY(-1px);
+        }
+
+        button.equal:active {
+            transform: translateY(0);
+        }
+
+        button.clear {
+            background: #3a2a2a;
+            color: #ffffff;
+            border: 1px solid #5a4a4a;
+        }
+
+        button.clear:hover {
+            background: #442a2a;
+            transform: translateY(-1px);
+        }
+
+        button.clear:active {
+            transform: translateY(0);
+        }
+
+        button.delete {
+            background: #3a3330;
+            color: #ffffff;
+            border: 1px solid #5a4a45;
+        }
+
+        button.delete:hover {
+            background: #44393a;
+            transform: translateY(-1px);
+        }
+
+        button.delete:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 300;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+                border-radius: 16px;
+            }
+
+            .display input {
+                font-size: 28px;
+            }
+
+            button {
+                padding: 15px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <i class="fas fa-calculator"></i>
+            CALCULATOR
+        </div>
+
+        <div class="display">
+            <div class="equation" id="equation"></div>
+            <input type="text" id="display" placeholder="0" readonly>
+        </div>
+
+        <div class="buttons">
+            <button class="clear" title="Clear all">
+                <i class="fas fa-broom"></i>
+            </button>
+            <button class="delete" title="Delete last">
+                <i class="fas fa-backspace"></i>
+            </button>
+            <button class="operator" data-operator="/" title="Divide">
+                <i class="fas fa-divide"></i>
+            </button>
+            <button class="operator" data-operator="*" title="Multiply">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <button class="number" data-number="7">7</button>
+            <button class="number" data-number="8">8</button>
+            <button class="number" data-number="9">9</button>
+            <button class="operator" data-operator="-" title="Subtract">
+                <i class="fas fa-minus"></i>
+            </button>
+
+            <button class="number" data-number="4">4</button>
+            <button class="number" data-number="5">5</button>
+            <button class="number" data-number="6">6</button>
+            <button class="operator" data-operator="+" title="Add">
+                <i class="fas fa-plus"></i>
+            </button>
+
+            <button class="number" data-number="1">1</button>
+            <button class="number" data-number="2">2</button>
+            <button class="number" data-number="3">3</button>
+            <button class="operator" data-operator="." title="Decimal">
+                <i class="fas fa-circle"></i>
+            </button>
+
+            <button class="number" data-number="0" style="grid-column: span 2;">0</button>
+            <button class="operator" data-operator="%" title="Modulo">
+                <i class="fas fa-percent"></i>
+            </button>
+            <button class="equal" title="Calculate">
+                <i class="fas fa-equals" style="margin-right: 8px;"></i>EQUALS
+            </button>
+        </div>
+
+        <div class="footer">
+            <i class="fas fa-star"></i> Elegant Calculator v1.0
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+        const equationDisplay = document.getElementById('equation');
+        let currentValue = '';
+        let previousValue = '';
+        let operation = null;
+        let shouldResetDisplay = false;
+
+        // Get all buttons
+        const numberButtons = document.querySelectorAll('.number');
+        const operatorButtons = document.querySelectorAll('.operator');
+        const equalButton = document.querySelector('.equal');
+        const clearButton = document.querySelector('.clear');
+        const deleteButton = document.querySelector('.delete');
+
+        // Number button click handlers
+        numberButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const number = button.dataset.number;
+                
+                if (shouldResetDisplay) {
+                    currentValue = number;
+                    shouldResetDisplay = false;
+                } else {
+                    currentValue += number;
+                }
+                updateDisplay();
+            });
+        });
+
+        // Operator button click handlers
+        operatorButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const op = button.dataset.operator;
+
+                // Handle decimal point
+                if (op === '.') {
+                    if (!currentValue.includes('.')) {
+                        currentValue += '.';
+                    }
+                    updateDisplay();
+                } else {
+                    // Handle percentage
+                    if (op === '%') {
+                        if (currentValue) {
+                            currentValue = (parseFloat(currentValue) / 100).toString();
+                            updateDisplay();
+                        }
+                    } else {
+                        // Handle basic operators
+                        if (currentValue !== '') {
+                            if (previousValue !== '' && operation) {
+                                calculate();
+                            }
+                            previousValue = currentValue;
+                            operation = op;
+                            shouldResetDisplay = true;
+                            updateDisplay();
+                        }
+                    }
+                }
+            });
+        });
+
+        // Equal button click handler
+        equalButton.addEventListener('click', () => {
+            if (operation && currentValue !== '' && previousValue !== '') {
+                calculate();
+            }
+        });
+
+        // Clear button click handler
+        clearButton.addEventListener('click', () => {
+            currentValue = '';
+            previousValue = '';
+            operation = null;
+            shouldResetDisplay = false;
+            updateDisplay();
+        });
+
+        // Delete button click handler
+        deleteButton.addEventListener('click', () => {
+            currentValue = currentValue.toString().slice(0, -1);
+            updateDisplay();
+        });
+
+        // Calculate function
+        function calculate() {
+            if (!operation || currentValue === '' || previousValue === '') return;
+
+            let result;
+            const prev = parseFloat(previousValue);
+            const current = parseFloat(currentValue);
+
+            switch (operation) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case '*':
+                    result = prev * current;
+                    break;
+                case '/':
+                    result = current !== 0 ? prev / current : 0;
+                    break;
+                default:
+                    return;
+            }
+
+            currentValue = result.toString();
+            previousValue = '';
+            operation = null;
+            shouldResetDisplay = true;
+            updateDisplay();
+        }
+
+        // Get operator symbol for display
+        function getOperatorSymbol(op) {
+            const symbols = {
+                '+': '+',
+                '-': '−',
+                '*': '×',
+                '/': '÷'
+            };
+            return symbols[op] || op;
+        }
+
+        // Update display
+        function updateDisplay() {
+            display.value = currentValue || '0';
+            
+            // Update equation display
+            if (operation && previousValue) {
+                equationDisplay.textContent = previousValue + ' ' + getOperatorSymbol(operation) + ' ' + (shouldResetDisplay ? '' : currentValue);
+            } else if (previousValue) {
+                equationDisplay.textContent = previousValue;
+            } else {
+                equationDisplay.textContent = '';
+            }
+        }
+
+        // Keyboard support
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '0' && e.key <= '9' || e.key === '.') {
+                if (shouldResetDisplay) {
+                    currentValue = e.key;
+                    shouldResetDisplay = false;
+                } else {
+                    currentValue += e.key;
+                }
+                updateDisplay();
+            } else if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') {
+                if (currentValue !== '') {
+                    if (previousValue !== '' && operation) {
+                        calculate();
+                    }
+                    previousValue = currentValue;
+                    operation = e.key;
+                    shouldResetDisplay = true;
+                    updateDisplay();
+                }
+            } else if (e.key === 'Enter' || e.key === '=') {
+                e.preventDefault();
+                if (operation && currentValue !== '' && previousValue !== '') {
+                    calculate();
+                }
+            } else if (e.key === 'Backspace') {
+                e.preventDefault();
+                currentValue = currentValue.toString().slice(0, -1);
+                updateDisplay();
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                currentValue = '';
+                previousValue = '';
+                operation = null;
+                shouldResetDisplay = false;
+                updateDisplay();
+            }
+        });
+
+        // Initial display update
+        updateDisplay();
+    </script>
+</body>
+</html>
