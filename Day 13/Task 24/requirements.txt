@@ -1,0 +1,6 @@
+Flask==3.0.0
+opencv-python-headless==4.10.1.26
+ultralytics==8.2.100
+Werkzeug==3.0.1
+numpy==1.24.3
+Pillow==10.1.0

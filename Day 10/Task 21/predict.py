@@ -1,6 +1,6 @@
-from ultralytics import Yolo
+from ultralytics import YOLO
 
-model = Yolo('best.pt')
+model = YOLO('train/weights/best.pt')
 
 results = model('test.png')
 

@@ -1,0 +1,7 @@
+As more developers transition from Windows to Linux, they often face a steep learning curve. Unlike Windows, where many tasks are supported by graphical tools and extensive vendor support, Linux frequently requires users to interact with the command line, understand system internals, and troubleshoot issues independently.
+
+While official documentation, community forums, and existing AI assistants provide valuable guidance, finding accurate and context-specific solutions can still be challenging. Many issues are scattered across Ubuntu documentation, Reddit discussions, Stack Overflow threads, GitHub issues, and various community forums, making the troubleshooting process time-consuming and frustrating.
+
+To address this problem, I propose a Retrieval-Augmented Generation (RAG) based chatbot designed specifically for Linux users. The system allows users to describe their issue in natural language. It then retrieves relevant information from trusted sources such as Ubuntu documentation, Reddit discussions, community forums, and technical knowledge bases. Using this retrieved context, the chatbot generates accurate, source-grounded solutions tailored to the user's problem.
+
+The goal is to provide developers with a centralized, intelligent troubleshooting assistant that reduces the effort required to search across multiple platforms and helps them adapt to Linux more efficiently.
